@@ -1,11 +1,11 @@
-const config=requiere('./utils/config')
-const express=requiere('express')
+const config=require('./utils/config')
+const express=require('express')
 const app=express()
-const cors=requiere('cors')
-const blogsRouter=requiere('./controllers/blogs')
-const middleware=requiere('./utils/middleware')
-const logger=requiere('./utils/logger')
-const mongoose=requiere('mongoose')
+const cors=require('cors')
+const blogsRouter=require('./controllers/blogs')
+const middleware=require('./utils/middleware')
+const logger=require('./utils/logger')
+const mongoose=require('mongoose')
 
 logger.info('connecting to', config.MONGODB_URI)
 
