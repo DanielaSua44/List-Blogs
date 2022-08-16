@@ -1,8 +1,10 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const Blog = require('../models/blogs')
+const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const api = supertest(app)
 
@@ -39,16 +41,32 @@ test('a valid blog can be added ', async () => {
         title: 'Test blog',
         author: 'Test author',
         url: 'www.test.com',
-        likes: 0
+        likes: 0,
     }
+
     await api
         .post('/api/blogs')
         .send(newBlog)
-        .expect(200)
+        .set('Authorization', `bearer ${process.env.TOKEN}`)
+        .end( async (err, res) => {
+            if (err) {
+                console.log(err)
+            }
+            expect(res.status).toBe(201)
+            expect(res.body.title).toBe('Test blog')
+            expect(res.body.author).toBe('Test author')
+            expect(res.body.url).toBe('www.test.com')
+            expect(res.body.likes).toBe(0)
+        } )
+        .expect(201)
         .expect('Content-Type', /application\/json/)
-    const response = await api.get('/api/blogs')
-    const titles = response.body.map(r => r.title)
-    expect(titles).toContain('Test blog')
+
+
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+
+
 } )
 
 test('a blog without likes is set to 0', async () => {
