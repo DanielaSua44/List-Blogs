@@ -6,7 +6,6 @@ const blogSchema = new mongoose.Schema({
     type: String,
     minlength: 5,
     required: true,
-    unique: true
   },
   author:{
     type: String,
